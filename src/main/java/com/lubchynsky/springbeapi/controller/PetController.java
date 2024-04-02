@@ -22,9 +22,9 @@ public class PetController {
     }
 
     /*
-    * Used optional query parameter
-    * http://localhost:8080/pets?n=2
-    * */
+     * Used optional query parameter
+     * http://localhost:8080/pets?n=2
+     * */
     @GetMapping
     public List<PetModel> getAll(@RequestParam("n") Optional<Integer> num) {
         if (num.isPresent()) {
@@ -39,7 +39,7 @@ public class PetController {
      * http://localhost:8080/pets/1
      * */
     @GetMapping("/{id}")
-    public PetModel getByPosition(@PathVariable("id") int id) {
-        return petService.get(id);
+    public PetModel getByPosition(@PathVariable("id") long id) {
+        return petService.get(id).orElse(new PetModel());
     }
 }
