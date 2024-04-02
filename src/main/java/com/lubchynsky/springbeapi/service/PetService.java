@@ -28,4 +28,8 @@ public class PetService {
     public PetModel get(int id) {
         return listOfPets.get(id);
     }
+
+    public List<PetModel> getSublist(int num) {
+        return listOfPets.subList(0, num);
+    }
 }
