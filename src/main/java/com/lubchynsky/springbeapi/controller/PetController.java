@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/pets")
@@ -20,11 +21,23 @@ public class PetController {
         petService.add(pet);
     }
 
+    /*
+    * Used optional query parameter
+    * http://localhost:8080/pets?n=2
+    * */
     @GetMapping
-    public List<PetModel> getAll() {
-        return petService.getAll();
+    public List<PetModel> getAll(@RequestParam("n") Optional<Integer> num) {
+        if (num.isPresent()) {
+            return petService.getSublist(num.get());
+        } else {
+            return petService.getAll();
+        }
     }
 
+    /*
+     * Used optional path parameter
+     * http://localhost:8080/pets/1
+     * */
     @GetMapping("/{id}")
     public PetModel getByPosition(@PathVariable("id") int id) {
         return petService.get(id);
