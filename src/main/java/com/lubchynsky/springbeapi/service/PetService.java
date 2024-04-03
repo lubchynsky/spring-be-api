@@ -13,13 +13,6 @@ public class PetService {
 
     @Autowired
     private PetRepository petRepository;
-//    private static final List<PetModel> listOfPets = new ArrayList<>() {
-//        {
-//            add(new PetModel("Rex", PetType.DOG, 1));
-//            add(new PetModel("Linda", PetType.DOG, 3));
-//            add(new PetModel("Catty", PetType.CAT, 0));
-//        }
-//    };
 
     public void add(PetModel pet) {
         petRepository.save(pet);
