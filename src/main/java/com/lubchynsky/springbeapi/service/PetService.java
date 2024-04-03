@@ -1,12 +1,10 @@
 package com.lubchynsky.springbeapi.service;
 
 import com.lubchynsky.springbeapi.model.PetModel;
-import com.lubchynsky.springbeapi.model.PetType;
 import com.lubchynsky.springbeapi.repository.PetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,5 +35,13 @@ public class PetService {
 
     public List<PetModel> getSublist(int num) {
         return petRepository.findAll().subList(0, num);
+    }
+
+    public void remove(long id) {
+        petRepository.deleteById(id);
+    }
+
+    public void update(PetModel pet) {
+        petRepository.save(pet);
     }
 }
