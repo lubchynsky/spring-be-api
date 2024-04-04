@@ -1,15 +1,6 @@
 version: '3.9'
 
 services:
-  postgres_db:
-    image: postgres:14-alpine
-    ports:
-      - 5432:5432
-    environment:
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_USER=admin
-      - POSTGRES_DB=pet_db
-
   be-app:
     image: 'my-be-api:latest'
     build:
@@ -17,10 +8,3 @@ services:
     container_name: be-app
     ports:
       - 8080:8080
-    depends_on:
-      - postgres_db
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/pet_db
-      - SPRING_DATASOURCE_USERNAME=admin
-      - SPRING_DATASOURCE_PASSWORD=admin
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
