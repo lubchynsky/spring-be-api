@@ -21,6 +21,13 @@ public class PetModel {
         this.age = age;
     }
 
+    public PetModel(Long id, String name, PetType type, int age) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.age = age;
+    }
+
     public long getId() {
         return id;
     }
