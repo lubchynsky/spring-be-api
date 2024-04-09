@@ -2,7 +2,7 @@ package com.lubchynsky.springbeapi.controller;
 
 
 import com.lubchynsky.springbeapi.model.PetModel;
-import com.lubchynsky.springbeapi.service.PetService;
+import com.lubchynsky.springbeapi.service.IPetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -17,11 +17,11 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class PetController {
 
     @Autowired
-    private PetService petService;
+    private IPetService iPetService;
 
     @PostMapping
     public void add(@RequestBody PetModel pet) {
-        petService.add(pet);
+        iPetService.add(pet);
     }
 
     /*
@@ -31,9 +31,9 @@ public class PetController {
     @GetMapping
     public List<PetModel> getAll(@RequestParam("n") Optional<Integer> num) {
         if (num.isPresent()) {
-            return petService.getSublist(num.get());
+            return iPetService.getSublist(num.get());
         } else {
-            return petService.getAll();
+            return iPetService.getAll();
         }
     }
 
@@ -43,7 +43,7 @@ public class PetController {
      * */
     @GetMapping("/{id}")
     public PetModel getByPosition(@PathVariable("id") long id) {
-        Optional<PetModel> pet = petService.get(id);
+        Optional<PetModel> pet = iPetService.get(id);
         if (pet.isPresent()) {
             return pet.get();
         } else {
@@ -52,12 +52,12 @@ public class PetController {
     }
 
     @PutMapping
-    public void update(@RequestBody PetModel pet){
-        petService.update(pet);
+    public void update(@RequestBody PetModel pet) {
+        iPetService.update(pet);
     }
 
     @DeleteMapping("/{id}")
-    public void deletePet(@PathVariable("id") long id){
-        petService.remove(id);
+    public void deletePet(@PathVariable("id") long id) {
+        iPetService.remove(id);
     }
 }
