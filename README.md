@@ -15,3 +15,6 @@ http://localhost:8080/swagger-ui/index.html
 - gradle build
 - docker build -t my-be-api .
 - docker-compose up
+
+# To use mocked repository
+- -Dspring.profiles.active=test
