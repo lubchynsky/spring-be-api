@@ -57,6 +57,7 @@ public class PetController {
                             try {
                                 return ResponseEntity
                                         .ok()
+                                        .location(new URI("/pets/" + pet.getId()))
                                         .body(pet);
                             } catch (Throwable e) {
                                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
