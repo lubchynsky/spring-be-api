@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IPetService {
-    void add(PetModel pet);
+    PetModel save(PetModel pet);
 
     List<PetModel> getAll();
 
@@ -14,7 +14,7 @@ public interface IPetService {
 
     List<PetModel> getSublist(int num);
 
-    void remove(long id);
+    boolean remove(long id);
 
-    void update(PetModel pet);
+    boolean update(PetModel pet);
 }

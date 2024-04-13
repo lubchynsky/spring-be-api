@@ -2,13 +2,9 @@ package com.lubchynsky.springbeapi.service;
 
 import com.lubchynsky.springbeapi.model.PetModel;
 import com.lubchynsky.springbeapi.model.PetType;
-import com.lubchynsky.springbeapi.repository.PetRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,8 +15,9 @@ public class MockPetService implements IPetService {
     private static final PetModel pet = new PetModel(1L, "Mocked Rex", PetType.DOG, 1);
 
     @Override
-    public void add(PetModel pet) {
+    public PetModel save(PetModel pet) {
         System.out.println("Added pet: " + pet);
+        return pet;
     }
 
     @Override
@@ -39,12 +36,14 @@ public class MockPetService implements IPetService {
     }
 
     @Override
-    public void remove(long id) {
+    public boolean remove(long id) {
         System.out.println("Removed pet: " + id);
+        return true;
     }
 
     @Override
-    public void update(PetModel pet) {
+    public boolean update(PetModel pet) {
         System.out.println("Updated pet: " + pet);
+        return true;
     }
 }
