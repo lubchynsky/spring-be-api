@@ -3,25 +3,34 @@ package com.lubchynsky.springbeapi.controller;
 
 import com.lubchynsky.springbeapi.model.PetModel;
 import com.lubchynsky.springbeapi.service.IPetService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Optional;
-
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
 @RequestMapping("/pets")
 public class PetController {
 
-    @Autowired
-    private IPetService iPetService;
+    private final IPetService iPetService;
+
+    public PetController(IPetService iPetService) {
+        this.iPetService = iPetService;
+    }
 
     @PostMapping
-    public void add(@RequestBody PetModel pet) {
-        iPetService.add(pet);
+    public ResponseEntity<?> add(@RequestBody PetModel pet) {
+        PetModel newPet = iPetService.save(pet);
+        try {
+            return ResponseEntity
+                    .created(new URI("/pets/" + newPet.getId()))
+                    .body(newPet);
+        } catch (URISyntaxException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     /*
@@ -29,7 +38,7 @@ public class PetController {
      * http://localhost:8080/pets?n=2
      * */
     @GetMapping
-    public List<PetModel> getAll(@RequestParam("n") Optional<Integer> num) {
+    public Iterable<PetModel> getAll(@RequestParam("n") Optional<Integer> num) {
         if (num.isPresent()) {
             return iPetService.getSublist(num.get());
         } else {
@@ -42,22 +51,56 @@ public class PetController {
      * http://localhost:8080/pets/1
      * */
     @GetMapping("/{id}")
-    public PetModel getByPosition(@PathVariable("id") long id) {
-        Optional<PetModel> pet = iPetService.get(id);
-        if (pet.isPresent()) {
-            return pet.get();
-        } else {
-            throw new ResponseStatusException(NOT_FOUND, "Unable to find resource");
-        }
+    public ResponseEntity<?> getByPosition(@PathVariable long id) {
+        return iPetService.get(id)
+                .map(pet -> {
+                            try {
+                                return ResponseEntity
+                                        .ok()
+                                        .body(pet);
+                            } catch (Throwable e) {
+                                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                            }
+                        }
+                ).orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping
-    public void update(@RequestBody PetModel pet) {
-        iPetService.update(pet);
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@RequestBody PetModel pet, @PathVariable long id) {
+        Optional<PetModel> existingPet = iPetService.get(id);
+        return existingPet.map(
+                p -> {
+                    p.setName(pet.getName());
+                    p.setType(pet.getType());
+                    p.setAge(pet.getAge());
+
+                    try {
+                        if (iPetService.update(p)) {
+                            return ResponseEntity
+                                    .ok()
+                                    .location(new URI("/pets/" + p.getId()))
+                                    .body(p);
+                        } else {
+                            return ResponseEntity.notFound().build();
+                        }
+                    } catch (URISyntaxException e) {
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                    }
+                }).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public void deletePet(@PathVariable("id") long id) {
-        iPetService.remove(id);
+    public ResponseEntity<?> deletePet(@PathVariable long id) {
+        Optional<PetModel> existingPet = iPetService.get(id);
+
+        return existingPet.map(
+                p -> {
+                    if (iPetService.remove(p.getId())) {
+                        return ResponseEntity.ok().build();
+                    } else {
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                    }
+                }
+        ).orElse(ResponseEntity.notFound().build());
     }
 }

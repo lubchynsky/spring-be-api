@@ -2,6 +2,8 @@ package com.lubchynsky.springbeapi.model;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "pets")
 public class PetModel {
@@ -58,5 +60,18 @@ public class PetModel {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PetModel petModel = (PetModel) o;
+        return age == petModel.age && Objects.equals(id, petModel.id) && Objects.equals(name, petModel.name) && type == petModel.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, type, age);
     }
 }

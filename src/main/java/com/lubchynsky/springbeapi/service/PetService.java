@@ -19,8 +19,8 @@ public class PetService implements IPetService {
     private PetRepository petRepository;
 
     @Override
-    public void add(PetModel pet) {
-        petRepository.save(pet);
+    public PetModel save(PetModel pet) {
+        return petRepository.save(pet);
     }
 
     @Override
@@ -39,12 +39,15 @@ public class PetService implements IPetService {
     }
 
     @Override
-    public void remove(long id) {
+    public boolean remove(long id) {
         petRepository.deleteById(id);
+        return petRepository.findById(id).isEmpty();
     }
 
     @Override
-    public void update(PetModel pet) {
+    public boolean update(PetModel pet) {
         petRepository.save(pet);
+        Optional<PetModel> updatedPet = petRepository.findById(pet.getId());
+        return updatedPet.map(p -> p.equals(pet)).orElse(false);
     }
 }
